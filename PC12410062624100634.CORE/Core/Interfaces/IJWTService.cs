@@ -1,12 +1,8 @@
-﻿using PC12410062624100634.CORE.Core.Entities;
-using PC12410062624100634.CORE.Core.Settings;
-
-namespace PC12410062624100634.CORE.Core.Interfaces
+﻿namespace PC12410062624100634.CORE.Core.Interfaces
 {
     public interface IJWTService
     {
-        JWTSettings _settings { get; }
-
-        string GenerateJWToken(User user);
+        // Genera un token usando datos básicos (puedes pasarle el correo del cliente o usuario)
+        string GenerateToken(string email, string role);
     }
 }

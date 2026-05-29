@@ -1,48 +1,52 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using PC12410062624100634.CORE.Core.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using PC12410062624100634.CORE.Core.Interfaces;
-using PC12410062624100634.CORE.Core.Settings;
 
 namespace PC12410062624100634.CORE.Infrastructure.Shared
 {
     public class JWTService : IJWTService
     {
-        public JWTSettings _settings { get; }
-        public JWTService(IOptions<JWTSettings> settings)
+        private readonly IConfiguration _configuration;
+
+        public JWTService(IConfiguration configuration)
         {
-            _settings = settings.Value;
+            _configuration = configuration;
         }
 
-        public string GenerateJWToken(User user)
+        public string GenerateToken(string email, string role)
         {
-            var ssk = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
-            var sc = new SigningCredentials(ssk, SecurityAlgorithms.HmacSha256);
-            var header = new JwtHeader(sc);
+            // 1. Extraer los parámetros del JWT desde el appsettings.json
+            var jwtSettings = _configuration.GetSection("JWTSettings");
+            var secretKey = jwtSettings.GetValue<string>("SecretKey")
+                ?? "ClaveSecretaSuperSeguraDeRespaldoParaElExamen123456!";
+            var issuer = jwtSettings.GetValue<string>("Issuer") ?? "http://localhost:5072";
+            var audience = jwtSettings.GetValue<string>("Audience") ?? "http://localhost:5072";
+            var durationInMinutes = jwtSettings.GetValue<int>("DurationInMinutes");
 
-            var claims = new[] {
-              new Claim(ClaimTypes.Name, (user.FirstName + "" + user.LastName)),
-              new Claim(ClaimTypes.GivenName, user.FirstName),
-              new Claim(ClaimTypes.Email, user.Email),
-              new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
-              new Claim(ClaimTypes.Country, user.Country),
-              new Claim(ClaimTypes.Role, user.Type == "A" ? "Admin": "User"),
-              new Claim("UserId",user.Id.ToString()),
-          };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var payload = new JwtPayload(
-                            _settings.Issuer
-                            , _settings.Audience
-                            , claims
-                            , DateTime.UtcNow
-                            , DateTime.UtcNow.AddMinutes(_settings.DurationInMinutes));
+            // 2. Definir los Claims (las propiedades que viajan encriptadas en el token)
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Email, email),
+                new Claim(ClaimTypes.Role, role),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
-            var token = new JwtSecurityToken(header, payload);
+            // 3. Crear el Token con su tiempo de expiración
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(durationInMinutes == 0 ? 60 : durationInMinutes),
+                signingCredentials: creds
+            );
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
