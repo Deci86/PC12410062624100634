@@ -1,0 +1,84 @@
+CREATE DATABASE TallerMecanico;
+GO
+
+USE TallerMecanico;
+GO
+
+-- 2. Creación de la tabla: TipoServicio
+CREATE TABLE TipoServicio (
+    ID INT IDENTITY(1,1) NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    precioBase DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT PK_TipoServicio PRIMARY KEY (ID)
+);
+GO
+
+-- 3. Creación de la tabla: Cliente
+CREATE TABLE Cliente (
+    ID INT IDENTITY(1,1) NOT NULL,
+    paterno VARCHAR(50) NOT NULL,
+    materno VARCHAR(50) NULL, -- Se permite NULL por si algún cliente no lo tiene
+    nombres VARCHAR(100) NOT NULL,
+    correo VARCHAR(150) NULL,
+    telefono VARCHAR(20) NULL,
+    CONSTRAINT PK_Cliente PRIMARY KEY (ID)
+);
+GO
+
+-- 4. Creación de la tabla: Vehiculo (Necesaria para relacionar con OrdenServicio)
+CREATE TABLE Vehiculo (
+    ID INT IDENTITY(1,1) NOT NULL,
+    Placa VARCHAR(15) NOT NULL,
+    Marca VARCHAR(50) NOT NULL,
+    Modelo VARCHAR(50) NOT NULL,
+    ClienteId INT NOT NULL,
+    CONSTRAINT PK_Vehiculo PRIMARY KEY (ID),
+    CONSTRAINT FK_Vehiculo_Cliente FOREIGN KEY (ClienteId) REFERENCES Cliente(ID),
+    CONSTRAINT UQ_Placa UNIQUE (Placa) -- Evita placas duplicadas
+);
+GO
+
+-- 5. Creación de la tabla: OrdenServicio
+CREATE TABLE OrdenServicio (
+    ID INT IDENTITY(1,1) NOT NULL,
+    FechaIngreso DATETIME NOT NULL DEFAULT GETDATE(), -- Por defecto toma la fecha actual
+    DescripcionProblema VARCHAR(MAX) NOT NULL,
+    CostoEstimado DECIMAL(10, 2) NOT NULL,
+    Estado VARCHAR(30) NOT NULL DEFAULT 'Ingresado', -- Estado inicial por defecto
+    VehiculoId INT NOT NULL,
+    TipoServicioId INT NOT NULL,
+    CONSTRAINT PK_OrdenServicio PRIMARY KEY (ID),
+    CONSTRAINT FK_OrdenServicio_Vehiculo FOREIGN KEY (VehiculoId) REFERENCES Vehiculo(ID),
+    CONSTRAINT FK_OrdenServicio_TipoServicio FOREIGN KEY (TipoServicioId) REFERENCES TipoServicio(ID)
+);
+GO
+
+
+
+USE TallerMecanico;
+GO
+
+-- 1. Insertar Tipos de Servicio básicos
+INSERT INTO TipoServicio (nombre, precioBase) VALUES 
+('Mantenimiento de Kilometraje', 150.00),
+('Cambio de Aceite y Filtro', 85.00),
+('Alineamiento y Balanceo', 120.00),
+('Reparación de Sistema de Frenos', 250.00);
+
+-- 2. Insertar Clientes de prueba
+INSERT INTO Cliente (paterno, materno, nombres, correo, telefono) VALUES 
+('Pérez', 'Gómez', 'Juan Carlos', 'juan.perez@email.com', '987654321'),
+('Rodríguez', 'López', 'María Fernanda', 'maria.rod@email.com', '912345678'),
+('Sánchez', 'Chávez', 'Pedro Luis', 'pedro.sanchez@email.com', '955667788');
+
+-- 3. Insertar Vehículos vinculados a esos clientes
+INSERT INTO Vehiculo (Placa, Marca, Modelo, ClienteId) VALUES 
+('ABC-123', 'Toyota', 'Corolla', 1), -- Le pertenece a Juan Pérez
+('XYZ-789', 'Hyundai', 'Tucson', 2), -- Le pertenece a María Fernanda
+('MNO-456', 'Kia', 'Rio', 3);      -- Le pertenece a Pedro Luis
+
+-- 4. Insertar Órdenes de Servicio iniciales
+INSERT INTO OrdenServicio (FechaIngreso, DescripcionProblema, CostoEstimado, Estado, VehiculoId, TipoServicioId) VALUES 
+(GETDATE(), 'Ruido extraño al frenar en pendientes.', 280.00, 'Ingresado', 1, 4),
+(GETDATE(), 'Le toca el mantenimiento de los 50,000 KM.', 150.00, 'En Proceso', 2, 1);
+GO
