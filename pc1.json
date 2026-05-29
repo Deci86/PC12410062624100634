@@ -1,0 +1,211 @@
+{
+  "info": {
+    "_postman_id": "5f7b3f41-4904-429d-9dd3-855a5244c479",
+    "name": "pc1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54272591",
+    "_collection_link": "https://go.postman.co/collection/54272591-5f7b3f41-4904-429d-9dd3-855a5244c479?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GET OrdenServicio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5072/api/OrdenServicio",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5072",
+          "path": [
+            "api",
+            "OrdenServicio"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET TipoServicio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5072/api/TipoServicio",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5072",
+          "path": [
+            "api",
+            "TipoServicio"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST OrdenServicio",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"fechaIngreso\": \"2026-05-26T19:24:36.417\",\r\n        \"descripcionProblema\": \"LLanta Desinflada.\",\r\n        \"costoEstimado\": 30.00,\r\n        \"estado\": \"Ingresado\",\r\n        \"vehiculoId\": 2,\r\n        \"tipoServicioId\": 2\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5072/api/OrdenServicio",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5072",
+          "path": [
+            "api",
+            "OrdenServicio"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST TipoServicio",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"nombre\": \"Mantenimiento de Limpiabrisas\",\r\n        \"precioBase\": 40.00,\r\n        \"ordenServicios\": []\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5072/api/TipoServicio",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5072",
+          "path": [
+            "api",
+            "TipoServicio"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT OrdenServicio",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id\": 1,\r\n        \"fechaIngreso\": \"2026-05-28T19:24:36.417\",\r\n        \"descripcionProblema\": \"Ruido MUY extraño al frenar en pendientes.\",\r\n        \"costoEstimado\": 280.00,\r\n        \"estado\": \"Ingresado\",\r\n        \"vehiculoId\": 1,\r\n        \"tipoServicioId\": 4\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5072/api/OrdenServicio/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5072",
+          "path": [
+            "api",
+            "OrdenServicio",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT TipoServicio",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id\": 1,\r\n        \"nombre\": \"Mantenimiento de LLantas\",\r\n        \"precioBase\": 150.00,\r\n        \"ordenServicios\": []\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5072/api/TipoServicio/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5072",
+          "path": [
+            "api",
+            "TipoServicio",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE OrdenServicio",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5072/api/OrdenServicio/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5072",
+          "path": [
+            "api",
+            "OrdenServicio",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE TipoServicio",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5072/api/OrdenServicio/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5072",
+          "path": [
+            "api",
+            "OrdenServicio",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
